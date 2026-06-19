@@ -29,7 +29,7 @@ func NewMemoryStore() *MemoryStore {
 }
 
 // create or update a key
-func (s *MemoryStore) Set(namespace, key, value string) *ConfigVersion {
+func (s *MemoryStore) Set(namespace, key, value string) (*ConfigVersion, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -41,7 +41,7 @@ func (s *MemoryStore) Set(namespace, key, value string) *ConfigVersion {
 	if !exists {
 		v := ConfigVersion{Value: value, Version: 1, UpdatedAt: time.Now().UTC()}
 		s.data[namespace][key] = &ConfigEntry{Current: v, History: []ConfigVersion{}}
-		return &v
+		return &v, nil
 	}
 
 	entry.History = append(entry.History, entry.Current)
@@ -51,7 +51,7 @@ func (s *MemoryStore) Set(namespace, key, value string) *ConfigVersion {
 		UpdatedAt: time.Now().UTC(),
 	}
 	entry.Current = newVersion
-	return &entry.Current
+	return &entry.Current, nil
 }
 
 func (s *MemoryStore) Get(namespace, key string) (*ConfigEntry, error) {

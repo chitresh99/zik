@@ -59,7 +59,11 @@ func (h *ConfigHandler) HandleSet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	version := h.store.Set(namespace, key, body.Value)
+	version, err := h.store.Set(namespace, key, body.Value)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 	writeJSON(w, http.StatusOK, version)
 }
 
