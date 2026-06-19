@@ -24,7 +24,7 @@ Every time a key's value is updated, the previous value is preserved as a versio
 ```
 # Set a config value
 POST /namespaces/prod-env/configs/db_url
-{ "value": "postgres://prod-host:5432/cerebellum" }
+{ "value": "postgres://prod-host:5432/production" }
 
 # Get the current value
 GET /namespaces/prod-env/configs/db_url
@@ -42,6 +42,30 @@ POST /namespaces/prod-env/configs/db_url/rollback
 # Delete a key entirely
 DELETE /namespaces/prod-env/configs/db_url
 ```
+
+## Example usage (curl)
+
+1) set a config
+curl -X POST http://localhost:8080/namespaces/dev-env/configs/db_url \
+  -H "Content-Type: application/json" \
+  -d '{"value": "postgres://localhost:5432/dev-env"}'
+
+2) get it
+curl http://localhost:8080/namespaces/dev-env/configs/db_url
+
+3) update it (creates v2)
+curl -X POST http://localhost:8080/namespaces/dev-env/configs/db_url \
+  -H "Content-Type: application/json" \
+  -d '{"value": "postgres://newhost:5432/dev-env"}'
+
+4) list all keys in namespace
+curl http://localhost:8080/namespaces/dev-env/configs
+
+5) rollback to v1
+curl -X POST http://localhost:8080/namespaces/dev-env/configs/db_url/rollback
+
+6) delete it
+curl -X DELETE http://localhost:8080/namespaces/dev-env/configs/db_url
 
 ## Architecture
 
