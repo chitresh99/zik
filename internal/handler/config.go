@@ -8,10 +8,10 @@ import (
 )
 
 type ConfigHandler struct {
-	store *store.MemoryStore
+	store store.Store
 }
 
-func NewConfigHandler(s *store.MemoryStore) *ConfigHandler {
+func NewConfigHandler(s store.Store) *ConfigHandler {
 	return &ConfigHandler{store: s}
 }
 
